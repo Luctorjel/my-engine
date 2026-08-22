@@ -32,6 +32,24 @@ typedef struct Scene{
     TextState t;
 }Scene;
 
+void loadscene1(Scene *cena){
+    int temp[10][10] ={{2,2,2,2,2,2,2,2,2,2},
+                       {2,1,1,1,1,1,1,1,1,2},
+                       {2,1,1,1,1,1,1,1,1,2},
+                       {2,1,1,1,1,1,1,1,1,2},
+                       {2,1,1,1,1,1,1,1,1,2},
+                       {2,1,1,1,1,1,1,1,1,2},
+                       {2,1,1,1,1,1,1,1,1,2},
+                       {2,1,1,1,1,1,1,1,1,2},
+                       {2,1,1,1,1,1,1,1,1,2},
+                       {2,2,2,2,2,2,2,2,2,2}};
+    for(int i = 0; i < 10; i++) {
+        for(int j = 0; j < 10; j++) {
+            cena->spriteScene[i][j] = temp[i][j];
+        }
+    }
+}
+
 int main(void)
 {
     // Configuração da janela (tela real) 8 x a virtual
@@ -45,18 +63,24 @@ int main(void)
     InitWindow(screenWidth, screenHeight, "Title");
     
     // engine vars
-    Texture2D texturas[1];//coloque o tanto que voce quer de texturas
+    Texture2D texturas[3];//coloque o tanto que voce quer de texturas
     Scene onScene;
     Player p;
     int textT=0;
+    Color Shader=WHITE;
     
     // load textures
     texturas[0]=LoadTexture("player.png");
+    texturas[1]=LoadTexture("grama.png");
+    texturas[2]=LoadTexture("arbusto.png");
     
     //init player
     p.sprite =0;
     p.x=10;
     p.y=0;
+    
+    //load init scene
+    loadscene1(&onScene);
 
     // Render texture para onde tudo do jogo será desenhado eceto o texto
     RenderTexture2D target = LoadRenderTexture(virtualScreenWidth, virtualScreenHeight);
@@ -73,10 +97,16 @@ int main(void)
         // Desenha o jogo dentro da Render Texture (Resolução Virtual)
         BeginTextureMode(target);
             ClearBackground(BLACK);
+            //draw scene
+            for(int i=0;i<10;i++){
+                for(int j=0;j<10;j++){
+                    DrawTexture(texturas[onScene.spriteScene[i][j]], j*8, i*8, Shader); 
+                }
+            }
             // retangulo de teste eu chamo ele de juvenildo
             DrawRectangleV((Vector2){0.0f,0.0f}, (Vector2){8.0f,8.0f}, RED);
             // DRAW player
-            DrawTexture(texturas[p.sprite], p.x, p.y, WHITE); 
+            DrawTexture(texturas[p.sprite], p.x, p.y, Shader); 
 
         EndTextureMode();
 
@@ -95,6 +125,7 @@ int main(void)
             }
         EndDrawing();
     }
+    
     
     // Limpeza de memória
     UnloadRenderTexture(target);
