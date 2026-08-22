@@ -42,14 +42,21 @@ int main(void)
     const int virtualScreenWidth = 96;
     const int virtualScreenHeight = 80;
     
+    InitWindow(screenWidth, screenHeight, "Title");
+    
     // engine vars
-    Texture2D texturas[10];
+    Texture2D texturas[1];//coloque o tanto que voce quer de texturas
     Scene onScene;
     Player p;
     int textT=0;
     
-
-    InitWindow(screenWidth, screenHeight, "Title");
+    // load textures
+    texturas[0]=LoadTexture("player.png");
+    
+    //init player
+    p.sprite =0;
+    p.x=10;
+    p.y=0;
 
     // Render texture para onde tudo do jogo será desenhado eceto o texto
     RenderTexture2D target = LoadRenderTexture(virtualScreenWidth, virtualScreenHeight);
@@ -69,7 +76,7 @@ int main(void)
             // retangulo de teste eu chamo ele de juvenildo
             DrawRectangleV((Vector2){0.0f,0.0f}, (Vector2){8.0f,8.0f}, RED);
             // DRAW player
-            DrawTexture(texturas[p.sprite], p.x, p.y, RED); 
+            DrawTexture(texturas[p.sprite], p.x, p.y, WHITE); 
 
         EndTextureMode();
 
