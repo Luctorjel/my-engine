@@ -1,8 +1,8 @@
 #include "raylib.h"
-#include <stdlib.h>
 
 typedef struct Entiny Entiny;
 typedef struct Event Event;
+typedef struct Scene Scene;
 
 typedef struct Player{
     int sprite, x, y;
@@ -10,24 +10,31 @@ typedef struct Player{
 
 typedef struct Entiny{
     int sprite, x, y;
-    void (*eFun)(Scene,Player);
+    void (*eFun)(Scene*,Player);
 }Entiny;
 
 typedef struct Event{
     int x, y;
-    void (*eFun)(Scene,Player);
+    void (*eFun)(Scene*,Player);
 }Event;
+
+typedef enum {
+    INVISIBLE,
+    ONSCREEN
+}TextState;
 
 typedef struct Scene{
     Entiny *entinys;
     Event *events;
     int spriteScene[10][10];
     int colision[10][10];
+    char text[21];
+    TextState t;
 }Scene;
 
 int main(void)
 {
-    // Configuração da janela (tela real)
+    // Configuração da janela (tela real) 8 x a virtual
     const int screenWidth = 768;
     const int screenHeight = 640;
 
@@ -36,18 +43,18 @@ int main(void)
     const int virtualScreenHeight = 80;
     
     // engine vars
-    Texture2D *texturas = malloc(3*sizeof(Texture2D)); 
+    Texture2D texturas[10];
     Scene onScene;
     Player p;
+    int textT=0;
     
 
-    InitWindow(screenWidth, screenHeight, "Resolução do Jogo");
+    InitWindow(screenWidth, screenHeight, "Title");
 
-    // Render texture para onde tudo do jogo será desenhado
+    // Render texture para onde tudo do jogo será desenhado eceto o texto
     RenderTexture2D target = LoadRenderTexture(virtualScreenWidth, virtualScreenHeight);
 
-    // Retângulos para renderizar a textura interna na tela final
-    // (A altura é negativa devido ao sistema de coordenadas do OpenGL)
+    // Retângulos para renderizar a textura interna na tela real
     Rectangle sourceRec = { 0.0f, 0.0f, (float)target.texture.width, -(float)target.texture.height };
     Rectangle destRec = { 0.0f, 0.0f, (float)screenWidth, (float)screenHeight };
     Vector2 origin = { 0.0f, 0.0f };
@@ -56,26 +63,33 @@ int main(void)
 
     while (!WindowShouldClose())
     {
-        // 1. Desenha o jogo dentro da Render Texture (Resolução Virtual)
+        // Desenha o jogo dentro da Render Texture (Resolução Virtual)
         BeginTextureMode(target);
             ClearBackground(BLACK);
-            
+            // retangulo de teste eu chamo ele de juvenildo
             DrawRectangleV((Vector2){0.0f,0.0f}, (Vector2){8.0f,8.0f}, RED);
-            // <-- Adicione a lógica de renderização do seu jogo aqui
+            // DRAW player
+            DrawTexture(texturas[p.sprite], p.x, p.y, RED); 
 
         EndTextureMode();
 
-        // 2. Desenha a Render Texture esticada na tela final
+        // Desenha a Render Texture no tamanho real da tela
         BeginDrawing();
             ClearBackground(BLACK);
 
             DrawTexturePro(target.texture, sourceRec, destRec, origin, 0.0f, WHITE);
-
+            // draw text isso adiciona um texto por tempo limitado
+            if(onScene.t==ONSCREEN && textT < 120){
+                DrawText(onScene.text, 30, 500, 30, BLUE);
+                textT++;
+            }else{
+                textT=0;
+                onScene.t = INVISIBLE;
+            }
         EndDrawing();
     }
     
     // Limpeza de memória
-    free(texturas);
     UnloadRenderTexture(target);
     CloseWindow();
 
