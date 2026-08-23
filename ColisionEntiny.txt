@@ -1,0 +1,10 @@
+bool ChecarColisaoEntiny(Vector2 posicaoPoco, Vector2 posicaoEntiny) {
+int tileX = (int)(posicaoPoco.x / 8);
+int tileY = (int)(posicaoPoco.y / 8);
+
+return (posicaoEntiny.x == posicaoPoco.x && posicaoEntiny.y == posicaoPoco.y );
+}
+
+if (!ChecarColisaoEntiny((Vector2){novaPosicao.x + 7, novaPosicao.y},EntinyPos) &&
+!ChecarColisaoTile((Vector2){novaPosicao.x + 7, novaPosicao.y + 7},EntinyPos)) {
+}
