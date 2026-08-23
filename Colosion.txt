@@ -1,0 +1,25 @@
+// Suponha um tileSize de 16 pixels e mapa em matriz 10x10 (0 = livre, 1 = sólido)
+int mapaColisao[10][10] = { /* seus dados aqui */ };
+
+bool ChecarColisaoTile(Vector2 posicaoPoco) {
+int tileX = (int)(posicaoPoco.x / 16);
+int tileY = (int)(posicaoPoco.y / 16);
+
+// Limites do mapa
+if (tileX < 0 || tileX >= 10 || tileY < 0 || tileY >= 10) return true;
+
+return (mapaColisao[tileY][tileX] == 1);
+}
+
+// No loop do jogo para o movimento horizontal:
+float velocidade = 2.0f;
+Vector2 novaPosicao = jogador.pos;
+
+if (IsKeyDown(KEY_RIGHT)) {
+novaPosicao.x += velocidade;
+// Checa o canto direito superior e inferior do player (ex: tamanho 16x16)
+if (!ChecarColisaoTile((Vector2){novaPosicao.x + 15, novaPosicao.y}) &&
+!ChecarColisaoTile((Vector2){novaPosicao.x + 15, novaPosicao.y + 15})) {
+jogador.pos.x = novaPosicao.x;
+}
+}
